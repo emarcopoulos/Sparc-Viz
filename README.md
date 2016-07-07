@@ -9,4 +9,4 @@ Sparc is a declarative language that takes an input and gives an answer set in r
 animate.java
 - File originally called solution.java, taken from the staff working in the KRLab at Texas Tech University
 - solution.java was the source code for creating static drawings from Sparc answer sets
-- Our goal is to modify this file to be able to do animations as well as static drawings
+- Our goal is to modify this file to be able to create animations as well as static drawings from Sparc answer sets
