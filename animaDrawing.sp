@@ -6,7 +6,7 @@ sorts
 	#co = {1,40}.
 	#id = {line}.
 	#drawing_command = draw_line(#id,#co,#co,#co,#co).
-	#frame = {1,2}.
+	#frame = {0,1}.
 
 predicates
 	
@@ -14,4 +14,4 @@ predicates
 
 rules
 
-	animate(draw_line(line,1,1,40,40), 1).
+	animate(draw_line(line,1,1,40,40), 0).
