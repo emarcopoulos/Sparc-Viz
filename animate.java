@@ -62,6 +62,10 @@ import java.util.*;
 import java.io.*; 
 
 
+class PathTo {
+	public static String java = "C:\\Program Files\\Java\\jdk1.8.0_65\\bin\\java";
+	public static String sparcJar = "..\\sparc.jar";
+}
 
 
 class StreamGobbler
@@ -277,7 +281,7 @@ class AnswerSet {
 class Parser{
 
     public static String computeAnswerSets(String programPath) {
-	       OsUtils.runCommand("java", " -jar compiler/sparc/canvas/sparc.jar -A "+programPath, "");
+	       OsUtils.runCommand(PathTo.java, " -jar "+PathTo.sparcJar+" -A "+programPath, "");
 		   
 		   return OsUtils.result.toString();
 	}
@@ -365,27 +369,27 @@ class Parser{
 	
 	public static boolean isVisual(String literal) {
 
-/* for original solution		
- *			switch (getPredicate(literal))
- *			
- *			{
- *				case "draw_line":  return true;
- *				case "line_width": return true; 
- *				case "line_cap": return true; 
- *				case "line_color": return true; 
- *				case "draw_quad_curve": return true; 
- *				case "draw_bezier_curve": return true;
- *				case "draw_arc_curve": return true; 
- *				case "draw_text": return true; 
- *				case "text_font": return true; 
- *				case "text_align": return true; 
- *				case "text_color": return true;
- *		} 
- *	  
- *	  return false;
- */
+/* for original solution */	
+ 		switch (getPredicate(literal))
+ 			
+ 		{
+			case "draw_line":  return true;
+			case "line_width": return true; 
+			case "line_cap": return true; 
+			case "line_color": return true; 
+			case "draw_quad_curve": return true; 
+			case "draw_bezier_curve": return true;
+			case "draw_arc_curve": return true; 
+			case "draw_text": return true; 
+			case "text_font": return true; 
+			case "text_align": return true; 
+			case "text_color": return true;
+ 		} 
+ 	  
+ 	  	return false;
+ /*
 		String predicate = getPredicate(literal);
- 		return (predicate == "animate" || predicate == "draw");
+ 		return (predicate == "animate" || predicate == "draw");*/
 	}
 	
 	
