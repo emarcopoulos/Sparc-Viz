@@ -21,10 +21,10 @@ Sparc is a declarative language that takes an input and gives an answer set in r
 - JavaScript/HTML5 code of what the animate.java will output in order for an animation to be executed. 
 
 #####expectedOutput_animaStatic.html
--JavaScript/HTML5 code of what the animate.java will output in order for a static drawing to be executed.
+- JavaScript/HTML5 code of what the animate.java will output in order for a static drawing to be executed.
 
 #####library.sp
 - All the drawing commands found in Maede's Drawing Report written in a SPARC file.
 
 #####staticDrawing.sp
--SPARC code that draws a line. 
+- SPARC code that draws a line. 
