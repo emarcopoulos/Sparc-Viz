@@ -335,7 +335,7 @@ class Parser{
 	
 	public static String getElement(String literal, int index){
 
-		String test=new String();
+//		String test=new String();
 		int i=0;
 		int start=0,end=0;
 		int parameter=0;
@@ -369,7 +369,7 @@ class Parser{
 	
 	public static boolean isVisual(String literal) {
 
-/* for original solution */	
+/* for original solution 
  		switch (getPredicate(literal))
  			
  		{
@@ -387,9 +387,13 @@ class Parser{
  		} 
  	  
  	  	return false;
- /*
-		String predicate = getPredicate(literal);
- 		return (predicate == "animate" || predicate == "draw");*/
+ */		
+ 	  	switch (getPredicate(literal))
+ 	  	{
+ 	  		case "animate": return true;
+ 	  		case "draw_line": return true;
+ 	  	}
+		return false;
 	}
 	
 	
@@ -564,7 +568,7 @@ class Parser{
 					return false;
 				}		
 			
-				if(toInt(getElement(vizAtoms.get(i),2))>1000 || toInt(getElement(vizAtoms.get(i),2))<1){
+				if(toInt(getElement(vizAtoms.get(i),2))>500 || toInt(getElement(vizAtoms.get(i),2))<1){
 					System.out.println("Error 2.5.1");
 					return false;
 				}
