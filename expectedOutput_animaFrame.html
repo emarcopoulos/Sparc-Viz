@@ -1,12 +1,8 @@
 <canvas id="myCanvas" width="500" height="500" style="border:1px solid">
 </canvas>
 <script>
-var c = document.getElementById("myCanvas");
-var ctx = c.getContext("2d");
-
 // http://paulirish.com/2011/requestanimationframe-for-smart-animating/
 // http://my.opera.com/emoller/blog/2011/12/20/requestanimationframe-for-smart-er-animating
-
 // requestAnimationFrame polyfill by Erik M├╢ller
 // fixes from Paul Irish and Tino Zijdel
 (function() {
@@ -17,7 +13,6 @@ var ctx = c.getContext("2d");
         window.cancelAnimationFrame = window[vendors[x]+'CancelAnimationFrame']
                                    || window[vendors[x]+'CancelRequestAnimationFrame'];
     }
-
     if (!window.requestAnimationFrame)
         window.requestAnimationFrame = function(callback, element) {
             var currTime = new Date().getTime();
@@ -27,13 +22,14 @@ var ctx = c.getContext("2d");
             lastTime = currTime + timeToCall;
             return id;
         };
-
     if (!window.cancelAnimationFrame)
         window.cancelAnimationFrame = function(id) {
             clearTimeout(id);
         };
 }());
-var drawings = [[],["ctx.beginPath();","ctx.moveTo(1,1);","ctx.lineTo(40,40);","ctx.stroke();"];
+var c = document.getElementById("myCanvas");
+var ctx = c.getContext("2d");
+var drawings = [[],["ctx.beginPath();","ctx.moveTo(1,1);","ctx.lineTo(40,40);","ctx.stroke();"]];
 var currentFrame = 0;
 var draw = function () {
 	ctx.clearRect(0, 0, c.width, c.height);
@@ -45,5 +41,4 @@ var draw = function () {
     }
 }
 requestAnimationFrame(draw);
-
 </script>
