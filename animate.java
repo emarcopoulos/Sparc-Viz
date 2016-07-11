@@ -927,7 +927,7 @@ class Parser{
 
 		System.out.println("var currentFrame = 0;\nvar draw = function () {\n	ctx.clearRect(0, 0, c.width, c.height);\n	for (var i = 0; i < drawings[currentFrame].length; i++) {\n		eval(drawings[currentFrame][i]);\n	}\n    if (++currentFrame < drawings.length) {\n        requestAnimationFrame(draw);\n    }\n}\nrequestAnimationFrame(draw);");
 
-		System.out.println("</script>");		
+		System.out.println("</script>");
 
 		
 	}
