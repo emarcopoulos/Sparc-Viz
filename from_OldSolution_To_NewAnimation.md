@@ -1,6 +1,6 @@
 # The original drawing java file flow
 
-### _KEY_: '[function]' indicate the function which will be detailed in the next indentation of the list
+### _KEY_: '[function]' indicate the function which will be detailed in the next indentation of the list.
 
 - call [main] with sparc program path
   - create storage for vizAtoms
@@ -37,5 +37,5 @@
 - run through predicates of these drawing commands to ensure they are actual drawing commands
 - use the same exact condition tests to see if isTrueVisual elements
 - change html printing statements into statements that add strings to an array
-- build array where each index of array corresponds to a frame and consists of an array of commands to be executed that consist of the drawing commands specified by the sparc program.
+- build array where each index of array corresponds to a frame and consists of an array of commands to be executed specified by the drawing commands specified by the sparc program.
 - print corresponding html program

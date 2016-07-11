@@ -363,31 +363,26 @@ class Parser{
 		return literal.substring(0,i);
 	}
 	
+	public static Vector<String> getDrawingCommands(Vector<String> vizAtoms) {
+		Vector<String> drawing_commands=new Vector<String>();
+		for(String vizAtom : vizAtoms) {
+			drawing_commands.add(getDrawingCommand(vizAtom));
+		}
+		return drawing_commands;
+	}
 
-
+	public static String getDrawingCommand(String literal){
+		int i=0;
+		while (literal.charAt(i)!=')' && i < literal.length()) i++;
+		// if the predicate is 'draw' then offset of 6, if 'animate' then offset of 9
+		if (literal.charAt(i) == 'd') {
+			return literal.substring(5,i+1);
+		}
+		return literal.substring(8,i+1);
+	}
 	
 	
 	public static boolean isVisual(String literal) {
-
-/* for original solution 
- 		switch (getPredicate(literal))
- 			
- 		{
-			case "draw_line":  return true;
-			case "line_width": return true; 
-			case "line_cap": return true; 
-			case "line_color": return true; 
-			case "draw_quad_curve": return true; 
-			case "draw_bezier_curve": return true;
-			case "draw_arc_curve": return true; 
-			case "draw_text": return true; 
-			case "text_font": return true; 
-			case "text_align": return true; 
-			case "text_color": return true;
- 		} 
- 	  
- 	  	return false;
- */		
  	  	switch (getPredicate(literal))
  	  	{
  	  		case "animate": return true;
@@ -430,7 +425,28 @@ class Parser{
 		return false;
 	}
 	
-	
+	public static boolean isTrueCommand(Vector<String> drawing_commands) {
+		for (int i = 0; i < drawing_commands.size(); i++) {
+ 			switch (getPredicate(drawing_commands.get(i)))
+	 			
+	 		{
+				case "draw_line":  continue;
+				case "line_width": continue;
+				case "line_cap": continue;
+				case "line_color": continue;
+				case "draw_quad_curve": continue;
+				case "draw_bezier_curve": continue;
+				case "draw_arc_curve": continue;
+				case "draw_text": continue;
+				case "text_font": continue;
+				case "text_align": continue;
+				case "text_color": continue;
+	 		} 
+	 	  	System.out.println("Error 0.0: "+getPredicate(drawing_commands.get(i))+" is not a drawing command");
+	 	  	return false;	
+		}
+		return true;
+	}
 	public static boolean isTrueVisual(Vector<String> vizAtoms) {
 				
 		for(int i=0;i<vizAtoms.size();i++){
@@ -801,7 +817,7 @@ class Parser{
 	
 	
 	
-	public static void translate(Vector<String> vizAtoms){
+	public static void translate(Vector<String> vizAtoms, Vector<String> drawing_commands){
 		
 		
 		
@@ -813,24 +829,19 @@ class Parser{
 
 
 		
-		
-		
-		
-		
-		
-		for (int i=0;i<vizAtoms.size();i++){
+		for (int i=0;i<drawing_commands.size();i++){
 
-			if (getPredicate(vizAtoms.get(i)).equals("draw_text")){
+			if (getPredicate(drawing_commands.get(i)).equals("draw_text")){
 				
-				translate_draw_text(vizAtoms.get(i), vizAtoms);
+				translate_draw_text(drawing_commands.get(i), drawing_commands);
 				/*
-				translate_draw_text(vizAtoms.get(i), vizAtoms); //this is function which returns void and 
-																//translates vizAtoms.get(i) which is a draw_text atom.
-																//we also pass the whole array vizAtoms to the function to 
+				translate_draw_text(drawing_commands.get(i), drawing_commands); //this is function which returns void and 
+																//translates drawing_commands.get(i) which is a draw_text atom.
+																//we also pass the whole array drawing_commands to the function to 
 																//extract the style of that specific draw_test 
 																//e.g. assume the atom is draw_text(a,...)
 																//you have to find all the styling predicates 
-																//related to "a" by going through atoms in vizAtoms and 
+																//related to "a" by going through atoms in drawing_commands and 
 																// translate darw_text(...) based on that styling. You can 
 																//find the information related to translation in excel 
 																//file library2. Also you can find the translation algorithm 
@@ -838,28 +849,28 @@ class Parser{
 				
 			}
 			
-			if (getPredicate(vizAtoms.get(i)).equals("draw_quad_curve")){
+			if (getPredicate(drawing_commands.get(i)).equals("draw_quad_curve")){
 				
-				translate_quad_curve(vizAtoms.get(i), vizAtoms); 
-				
-			}
-			
-			if (getPredicate(vizAtoms.get(i)).equals("draw_arc_curve")){
-				
-				translate_arc_curve(vizAtoms.get(i), vizAtoms);  
+				translate_quad_curve(drawing_commands.get(i), drawing_commands); 
 				
 			}
 			
-			if (getPredicate(vizAtoms.get(i)).equals("draw_line")){   
+			if (getPredicate(drawing_commands.get(i)).equals("draw_arc_curve")){
+				
+				translate_arc_curve(drawing_commands.get(i), drawing_commands);  
+				
+			}
+			
+			if (getPredicate(drawing_commands.get(i)).equals("draw_line")){   
 				
 		
-				translate_draw_line(vizAtoms.get(i), vizAtoms);  
+				translate_draw_line(drawing_commands.get(i), drawing_commands);  
 			}
 			
-			if (getPredicate(vizAtoms.get(i)).equals("draw_bezier_curve")){   
+			if (getPredicate(drawing_commands.get(i)).equals("draw_bezier_curve")){   
 				
 		
-				translate_bezier_curve(vizAtoms.get(i), vizAtoms);  
+				translate_bezier_curve(drawing_commands.get(i), drawing_commands);  
 			}
 			
 			
@@ -879,8 +890,9 @@ System.out.println("</script>");
     public static void main(String []args) {
 
 	
-		//initialize an vector of string for storing drawing commands
+		//initialize two vectors of strings for storing vizatoms and the drawing commands
 		Vector<String> vizAtoms=new Vector<String>();
+		Vector<String> draw_commands=new Vector<String>();
 		
 		String result = computeAnswerSets(args[0]);
 		ArrayList<AnswerSet> answerSets = parseResult(result);
@@ -917,16 +929,18 @@ System.out.println("</script>");
 			return;
 		}
 		//System.out.println("print outside");
-		//now  vizAtoms is the vector containing all drawing commands
-		//translate function takes vizAtoms and returns nothing, but it prints the translation of
-		//commands in vizAtoms
 		
-		
+		//must create new array for just the drawing commands inside the vizatoms
+		draw_commands = getDrawingCommands(vizAtoms);
 		//System.out.println(vizAtoms.get(0));
-		
-		if(isTrueVisual(vizAtoms)){
+		//for(String command : draw_commands) System.out.println(command);
+
+		//now  draw_commands is the vector containing all drawing commands
+		//translate function takes vizAtoms and draw_commands and returns nothing, but it prints the translation of
+		//commands in vizAtoms		
+		if(isTrueCommand(draw_commands) && isTrueVisual(draw_commands)){
 			//System.out.println("print is true");
-			translate(vizAtoms);
+			translate(vizAtoms, draw_commands);
 			
 		}
 		else{
