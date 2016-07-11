@@ -33,7 +33,7 @@ var ctx = c.getContext("2d");
             clearTimeout(id);
         };
 }());
-var drawings = [["ctx.beginPath();","ctx.moveTo(1,1);","ctx.lineTo(40,40);","ctx.stroke();"],[]];
+var drawings = [[],["ctx.beginPath();","ctx.moveTo(1,1);","ctx.lineTo(40,40);","ctx.stroke();"];
 var currentFrame = 0;
 var draw = function () {
 	ctx.clearRect(0, 0, c.width, c.height);

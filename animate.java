@@ -363,6 +363,22 @@ class Parser{
 		return literal.substring(0,i);
 	}
 	
+	public static int getMaxFrame(Vector<String> vizAtoms) {
+		int max = 0;
+		for (String vizAtom : vizAtoms) {
+			int temp = getFrame(vizAtom);
+			if (temp > max) {
+				max = temp;
+			}
+		}
+	}
+
+	public static int getFrame(String vizAtom) {
+		int i = 0;
+		while (vizAtom.charAt(i) != ')' && i < vizAtom.length()) i++;
+		return toInt(vizAtom.substring(i,vizAtom.length()));
+	}
+
 	public static Vector<String> getDrawingCommands(Vector<String> vizAtoms) {
 		Vector<String> drawing_commands=new Vector<String>();
 		for(String vizAtom : vizAtoms) {
@@ -375,7 +391,7 @@ class Parser{
 		int i=0;
 		while (literal.charAt(i)!=')' && i < literal.length()) i++;
 		// if the predicate is 'draw' then offset of 6, if 'animate' then offset of 9
-		if (literal.charAt(i) == 'd') {
+		if (literal.charAt(0) == 'd') {
 			return literal.substring(5,i+1);
 		}
 		return literal.substring(8,i+1);
@@ -706,120 +722,130 @@ class Parser{
 		
 		
 		
-	public static void translate_draw_text(String literal, Vector<String> vizAtoms){
+	public static Vector<String> translate_draw_text(String literal, Vector<String> vizAtoms){
+		Vector<String> javaScript = new Vector<String>();
 		
 		for (int i=0;i<vizAtoms.size();i++){
 			
 			if (getPredicate(vizAtoms.get(i)).equals("text_font") && getElement(literal,1).equals(getElement(vizAtoms.get(i),1))){
-				System.out.println("ctx.font=\""+getElement(vizAtoms.get(i),2)+"px "+getElement(vizAtoms.get(i),3)+"\";");
+				javaScript.add("ctx.font=\""+getElement(vizAtoms.get(i),2)+"px "+getElement(vizAtoms.get(i),3)+"\";");
 				
 			}
 			
 			if (getPredicate(vizAtoms.get(i)).equals("text_align") && getElement(literal,1).equals(getElement(vizAtoms.get(i),1))){
-				System.out.println("ctx.textAlign=\""+getElement(vizAtoms.get(i),2)+"\";");
+				javaScript.add("ctx.textAlign=\""+getElement(vizAtoms.get(i),2)+"\";");
 				
 			}
 			
 			if (getPredicate(vizAtoms.get(i)).equals("text_color") && getElement(literal,1).equals(getElement(vizAtoms.get(i),1))){
-				System.out.println("ctx.fillStyle=\""+getElement(vizAtoms.get(i),2)+"\";");
+				javaScript.add("ctx.fillStyle=\""+getElement(vizAtoms.get(i),2)+"\";");
 				
 			}
 	
 		}
-		System.out.println("ctx.fillText(\""+getElement(literal,2)+"\","+getElement(literal,3)+","+getElement(literal,4)+");");
+		javaScript.add("ctx.fillText(\""+getElement(literal,2)+"\","+getElement(literal,3)+","+getElement(literal,4)+");");
+		return javaScript;
 	}
 	
-	public static void translate_quad_curve(String literal, Vector<String> vizAtoms){
-		System.out.println("ctx.beginPath();");
-		System.out.println("ctx.moveTo("+getElement(literal,2)+","+getElement(literal,3)+");");
-		System.out.println("ctx.quadraticCurveTo("+getElement(literal,4)+","+getElement(literal,5)+","+getElement(literal,6)+","+getElement(literal,7)+");");
+	public static Vector<String> translate_quad_curve(String literal, Vector<String> vizAtoms){
+		Vector<String> javaScript = new Vector<String>();
+		javaScript.add("ctx.beginPath();");
+		javaScript.add("ctx.moveTo("+getElement(literal,2)+","+getElement(literal,3)+");");
+		javaScript.add("ctx.quadraticCurveTo("+getElement(literal,4)+","+getElement(literal,5)+","+getElement(literal,6)+","+getElement(literal,7)+");");
 		for (int i=0;i<vizAtoms.size();i++){
 			if (getPredicate(vizAtoms.get(i)).equals("line_width") && getElement(literal,1).equals(getElement(vizAtoms.get(i),1))){
-				System.out.println("ctx.lineWidth="+getElement(vizAtoms.get(i),2)+";");
+				javaScript.add("ctx.lineWidth="+getElement(vizAtoms.get(i),2)+";");
 			}
 			
 			if (getPredicate(vizAtoms.get(i)).equals("line_cap") && getElement(literal,1).equals(getElement(vizAtoms.get(i),1))){
-				System.out.println("ctx.lineCap=\""+getElement(vizAtoms.get(i),2)+"\";");
+				javaScript.add("ctx.lineCap=\""+getElement(vizAtoms.get(i),2)+"\";");
 			}
 			
 			if (getPredicate(vizAtoms.get(i)).equals("line_color") && getElement(literal,1).equals(getElement(vizAtoms.get(i),1))){
-				System.out.println("ctx.strokeStyle=\""+""+getElement(vizAtoms.get(i),2)+"\";");
+				javaScript.add("ctx.strokeStyle=\""+""+getElement(vizAtoms.get(i),2)+"\";");
 			}
 		}
-		System.out.println("ctx.stroke();");
+		javaScript.add("ctx.stroke();");
+		return javaScript;
 	}
 	
-	public static void translate_arc_curve(String literal, Vector<String> vizAtoms){
-		System.out.println("ctx.beginPath();");
-		System.out.println("ctx.moveTo("+getElement(literal,2)+","+getElement(literal,3)+");");
+	public static Vector<String> translate_arc_curve(String literal, Vector<String> vizAtoms){
+		Vector<String> javaScript = new Vector<String>();
+		javaScript.add("ctx.beginPath();");
+		javaScript.add("ctx.moveTo("+getElement(literal,2)+","+getElement(literal,3)+");");
 		
 		
 		int a=Integer.valueOf(getElement(literal,5));
 		int b=Integer.valueOf(getElement(literal,6));
 		a=a/8; b=b/8;
 		
-		System.out.println("ctx.arc("+getElement(literal,2)+","+getElement(literal,3)+","+getElement(literal,4)+","+a+"*Math.PI"+","+b+"*Math.PI"+");");
+		javaScript.add("ctx.arc("+getElement(literal,2)+","+getElement(literal,3)+","+getElement(literal,4)+","+a+"*Math.PI"+","+b+"*Math.PI"+");");
 		for (int i=0;i<vizAtoms.size();i++){
 			if (getPredicate(vizAtoms.get(i)).equals("line_width") && getElement(literal,1).equals(getElement(vizAtoms.get(i),1))){
-				System.out.println("ctx.lineWidth="+getElement(vizAtoms.get(i),2)+";");	
+				javaScript.add("ctx.lineWidth="+getElement(vizAtoms.get(i),2)+";");	
 			}
 			if (getPredicate(vizAtoms.get(i)).equals("line_cap") && getElement(literal,1).equals(getElement(vizAtoms.get(i),1))){
-				System.out.println("ctx.lineCap=\""+getElement(vizAtoms.get(i),2)+"\";");
+				javaScript.add("ctx.lineCap=\""+getElement(vizAtoms.get(i),2)+"\";");
 			}
 			if (getPredicate(vizAtoms.get(i)).equals("line_color") && getElement(literal,1).equals(getElement(vizAtoms.get(i),1))){
-				System.out.println("ctx.strokeStyle=\""+""+getElement(vizAtoms.get(i),2)+"\";");	
+				javaScript.add("ctx.strokeStyle=\""+""+getElement(vizAtoms.get(i),2)+"\";");	
 			}
 		}
-		System.out.println("ctx.stroke();");
+		javaScript.add("ctx.stroke();");
+		return javaScript;
 	}
 	
-	public static void translate_bezier_curve(String literal, Vector<String> vizAtoms){
-		System.out.println("ctx.beginPath();");
-		System.out.println("ctx.moveTo("+getElement(literal,2)+","+getElement(literal,3)+");");
-		System.out.println("ctx.bezierCurveTo("+getElement(literal,4)+","+getElement(literal,5)+","+getElement(literal,6)+","+getElement(literal,7)+","+getElement(literal,8)+","+getElement(literal,9)+");");
+	public static Vector<String> translate_bezier_curve(String literal, Vector<String> vizAtoms){
+		Vector<String> javaScript = new Vector<String>();
+		javaScript.add("ctx.beginPath();");
+		javaScript.add("ctx.moveTo("+getElement(literal,2)+","+getElement(literal,3)+");");
+		javaScript.add("ctx.bezierCurveTo("+getElement(literal,4)+","+getElement(literal,5)+","+getElement(literal,6)+","+getElement(literal,7)+","+getElement(literal,8)+","+getElement(literal,9)+");");
 		for (int i=0;i<vizAtoms.size();i++){
 			if (getPredicate(vizAtoms.get(i)).equals("line_width") && getElement(literal,1).equals(getElement(vizAtoms.get(i),1))){
-				System.out.println("ctx.lineWidth="+getElement(vizAtoms.get(i),2)+";");
+				javaScript.add("ctx.lineWidth="+getElement(vizAtoms.get(i),2)+";");
 			}
 			
 			if (getPredicate(vizAtoms.get(i)).equals("line_cap") && getElement(literal,1).equals(getElement(vizAtoms.get(i),1))){
-				System.out.println("ctx.lineCap=\""+getElement(vizAtoms.get(i),2)+"\";");
+				javaScript.add("ctx.lineCap=\""+getElement(vizAtoms.get(i),2)+"\";");
 			}
 			
 			if (getPredicate(vizAtoms.get(i)).equals("line_color") && getElement(literal,1).equals(getElement(vizAtoms.get(i),1))){
-				System.out.println("ctx.strokeStyle=\""+""+getElement(vizAtoms.get(i),2)+"\";");
+				javaScript.add("ctx.strokeStyle=\""+""+getElement(vizAtoms.get(i),2)+"\";");
 			}
 		}
-		System.out.println("ctx.stroke();");
+		javaScript.add("ctx.stroke();");
+		return javaScript;
 	}
 	
 	
 	
 	
 	
-	public static void translate_draw_line(String literal, Vector<String> vizAtoms){
-		System.out.println("ctx.beginPath();");
-		System.out.println("ctx.moveTo("+getElement(literal,2)+","+getElement(literal,3)+");");
-		System.out.println("ctx.lineTo("+getElement(literal,4)+","+getElement(literal,5)+");");
+	public static Vector<String> translate_draw_line(String literal, Vector<String> vizAtoms){
+		Vector<String> javaScript = new Vector<String>();
+		javaScript.add("ctx.beginPath();");
+		javaScript.add("ctx.moveTo("+getElement(literal,2)+","+getElement(literal,3)+");");
+		javaScript.add("ctx.lineTo("+getElement(literal,4)+","+getElement(literal,5)+");");
 		for (int i=0;i<vizAtoms.size();i++){
 			if (getPredicate(vizAtoms.get(i)).equals("line_width") && getElement(literal,1).equals(getElement(vizAtoms.get(i),1))){
-				System.out.println("ctx.lineWidth="+getElement(vizAtoms.get(i),2)+";");	
+				javaScript.add("ctx.lineWidth="+getElement(vizAtoms.get(i),2)+";");	
 			}
 			if (getPredicate(vizAtoms.get(i)).equals("line_cap") && getElement(literal,1).equals(getElement(vizAtoms.get(i),1))){
-				System.out.println("ctx.lineCap=\""+getElement(vizAtoms.get(i),2)+"\";");
+				javaScript.add("ctx.lineCap=\""+getElement(vizAtoms.get(i),2)+"\";");
 			}
 			if (getPredicate(vizAtoms.get(i)).equals("line_color") && getElement(literal,1).equals(getElement(vizAtoms.get(i),1))){
-				System.out.println("ctx.strokeStyle=\""+""+getElement(vizAtoms.get(i),2)+"\";");	
+				javaScript.add("ctx.strokeStyle=\""+""+getElement(vizAtoms.get(i),2)+"\";");	
 			}
 		}
-		System.out.println("ctx.stroke();");
+		javaScript.add("ctx.stroke();");
+		return javaScript;
 	}
 	
 	
 	
 	public static void translate(Vector<String> vizAtoms, Vector<String> drawing_commands){
 		
-		
+		Vector<String> javaScript = new Vector<String>();
 		
 		System.out.println("<canvas id=\"myCanvas\" width=\"500\" height=\"500\" style=\"border:1px solid\">");
 		System.out.println("</canvas>");
@@ -833,17 +859,21 @@ class Parser{
 
 			if (getPredicate(drawing_commands.get(i)).equals("draw_text")){
 				
-				translate_draw_text(drawing_commands.get(i), drawing_commands);
+				javaScript.addAll(translate_draw_text(drawing_commands.get(i), drawing_commands));
+				
 				/*
 				translate_draw_text(drawing_commands.get(i), drawing_commands); //this is function which returns void and 
+				
 																//translates drawing_commands.get(i) which is a draw_text atom.
-																//we also pass the whole array drawing_commands to the function to 
+																	/
+																/we also pass the whole array drawing_commands to the function to 
 																//extract the style of that specific draw_test 
 																//e.g. assume the atom is draw_text(a,...)
 																//you have to find all the styling predicates 
 																//related to "a" by going through atoms in drawing_commands and 
 																// translate darw_text(...) based on that styling. You can 
-																//find the information related to translation in excel 
+																	//
+																find the information related to translation in excel 
 																//file library2. Also you can find the translation algorithm 
 				*/												//for each part in TranslationAlgorithm.txt file.
 				
@@ -851,34 +881,38 @@ class Parser{
 			
 			if (getPredicate(drawing_commands.get(i)).equals("draw_quad_curve")){
 				
-				translate_quad_curve(drawing_commands.get(i), drawing_commands); 
+				javaScript.addAll(translate_quad_curve(drawing_commands.get(i), drawing_commands)); 
 				
+
 			}
 			
 			if (getPredicate(drawing_commands.get(i)).equals("draw_arc_curve")){
 				
-				translate_arc_curve(drawing_commands.get(i), drawing_commands);  
+				javaScript.addAll(translate_arc_curve(drawing_commands.get(i), drawing_commands));  
 				
+
 			}
 			
 			if (getPredicate(drawing_commands.get(i)).equals("draw_line")){   
 				
 		
-				translate_draw_line(drawing_commands.get(i), drawing_commands);  
+				javaScript.addAll(translate_draw_line(drawing_commands.get(i), drawing_commands));  
+				
 			}
 			
 			if (getPredicate(drawing_commands.get(i)).equals("draw_bezier_curve")){   
 				
 		
-				translate_bezier_curve(drawing_commands.get(i), drawing_commands);  
-			}
-			
-			
-			
+				javaScript.addAll(translate_bezier_curve(drawing_commands.get(i), drawing_commands));  
+				
+			}	
 			
 		} 
 		
-System.out.println("</script>");		
+		for (int i = 0; i < javaScript.size(); i++) {
+			System.out.println(javaScript.get(i));
+		}
+		System.out.println("</script>");		
 
 		
 	}

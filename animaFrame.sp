@@ -14,4 +14,4 @@ predicates
 
 rules
 
-	animate(draw_line(line,1,1,40,40), 0).
+	animate(draw_line(line,1,1,40,40), 1).
