@@ -366,9 +366,6 @@ class Parser{
 	public static int getMaxFrame(Vector<String> vizAtoms) {
 		int max = 0;
 		for (String vizAtom : vizAtoms) {
-			if (vizAtom.charAt(0) == 'd') {//there is no frame to get
-				continue;
-			}
 			int temp = getFrame(vizAtom);
 			if (temp > max) {
 				max = temp;
@@ -378,6 +375,9 @@ class Parser{
 	}
 
 	public static int getFrame(String vizAtom) {
+		if (vizAtom.charAt(0) == 'd') {//there is no frame to get
+			return -1;
+		}
 		int i = 0;
 		while (vizAtom.charAt(i) != ')' && i < vizAtom.length()) i++;
 		return toInt(vizAtom.substring(i+2,vizAtom.length()-1));
