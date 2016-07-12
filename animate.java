@@ -366,6 +366,9 @@ class Parser{
 	public static int getMaxFrame(Vector<String> vizAtoms) {
 		int max = 0;
 		for (String vizAtom : vizAtoms) {
+			if (vizAtom.charAt(0) == 'd') {//there is no frame to get
+				continue;
+			}
 			int temp = getFrame(vizAtom);
 			if (temp > max) {
 				max = temp;
@@ -403,7 +406,7 @@ class Parser{
  	  	switch (getPredicate(literal))
  	  	{
  	  		case "animate": return true;
- 	  		case "draw_line": return true;
+ 	  		case "draw": return true;
  	  	}
 		return false;
 	}
@@ -844,7 +847,8 @@ class Parser{
 	public static void translate(Vector<String> vizAtoms, Vector<String> drawing_commands){
 		
 		Vector<Vector<String>> commandArray = new Vector<Vector<String>>();
-		for (int i = 0; i < getMaxFrame(vizAtoms)+1; i++) {
+		int numFrames = getMaxFrame(vizAtoms) + 1;
+		for (int i = 0; i < numFrames; i++) {
 			commandArray.add(new Vector<String>());
 		}
 		System.out.println("<canvas id=\"myCanvas\" width=\"500\" height=\"500\" style=\"border:1px solid\">");
@@ -854,14 +858,24 @@ class Parser{
 		System.out.println("var c = document.getElementById(\"myCanvas\");");
 		System.out.println("var ctx = c.getContext(\"2d\");");
 
-
+		boolean staticDrawing = false;
 		
 		for (int i=0;i<drawing_commands.size();i++){
+			if (vizAtoms.get(i).charAt(0) == 'd') {
+				staticDrawing = true;
+			} else {
+				staticDrawing = false;
+			}
 
 			if (getPredicate(drawing_commands.get(i)).equals("draw_text")){
-				
-				commandArray.get(getFrame(vizAtoms.get(i))).addAll(translate_draw_text(drawing_commands.get(i), vizAtoms.get(i), drawing_commands, vizAtoms));
-				
+				if (staticDrawing) {
+					Vector<String> commands = translate_draw_text(drawing_commands.get(i), vizAtoms.get(i), drawing_commands, vizAtoms);
+					for (int j = 0; j < numFrames; j++) {
+						commandArray.get(j).addAll(commands);
+					} 
+				} else {
+					commandArray.get(getFrame(vizAtoms.get(i))).addAll(translate_draw_text(drawing_commands.get(i), vizAtoms.get(i), drawing_commands, vizAtoms));
+				}			
 				/*
 				translate_draw_text(drawing_commands.get(i), vizAtoms.get(i), drawing_commands, vizAtoms); //this is function which returns void and 
 				
@@ -881,30 +895,49 @@ class Parser{
 			}
 			
 			if (getPredicate(drawing_commands.get(i)).equals("draw_quad_curve")){
-				
-				commandArray.get(getFrame(vizAtoms.get(i))).addAll(translate_quad_curve(drawing_commands.get(i), vizAtoms.get(i), drawing_commands, vizAtoms)); 
-				
+				if (staticDrawing) {
+					Vector<String> commands = translate_quad_curve(drawing_commands.get(i), vizAtoms.get(i), drawing_commands, vizAtoms);
+					for (int j = 0; j < numFrames; j++) {
+						commandArray.get(j).addAll(commands);
+					} 
+				} else {
+					commandArray.get(getFrame(vizAtoms.get(i))).addAll(translate_quad_curve(drawing_commands.get(i), vizAtoms.get(i), drawing_commands, vizAtoms)); 
+				}			
 
 			}
 			
 			if (getPredicate(drawing_commands.get(i)).equals("draw_arc_curve")){
-				
-				commandArray.get(getFrame(vizAtoms.get(i))).addAll(translate_arc_curve(drawing_commands.get(i), vizAtoms.get(i), drawing_commands, vizAtoms));  
-				
+				if (staticDrawing) {
+					Vector<String> commands = translate_arc_curve(drawing_commands.get(i), vizAtoms.get(i), drawing_commands, vizAtoms);
+					for (int j = 0; j < numFrames; j++) {
+						commandArray.get(j).addAll(commands);
+					} 
+				} else {
+					commandArray.get(getFrame(vizAtoms.get(i))).addAll(translate_arc_curve(drawing_commands.get(i), vizAtoms.get(i), drawing_commands, vizAtoms));  
+				}			
 
 			}
 			
 			if (getPredicate(drawing_commands.get(i)).equals("draw_line")){   
-
-				commandArray.get(getFrame(vizAtoms.get(i))).addAll(translate_draw_line(drawing_commands.get(i), vizAtoms.get(i), drawing_commands, vizAtoms));  
-				
+				if (staticDrawing) {
+					Vector<String> commands = translate_draw_line(drawing_commands.get(i), vizAtoms.get(i), drawing_commands, vizAtoms);
+					for (int j = 0; j < numFrames; j++) {
+						commandArray.get(j).addAll(commands);
+					} 
+				} else {
+					commandArray.get(getFrame(vizAtoms.get(i))).addAll(translate_draw_line(drawing_commands.get(i), vizAtoms.get(i), drawing_commands, vizAtoms));  
+				}			
 			}
 			
-			if (getPredicate(drawing_commands.get(i)).equals("draw_bezier_curve")){   
-				
-		
-				commandArray.get(getFrame(vizAtoms.get(i))).addAll(translate_bezier_curve(drawing_commands.get(i), vizAtoms.get(i), drawing_commands, vizAtoms));  
-				
+			if (getPredicate(drawing_commands.get(i)).equals("draw_bezier_curve")){   	
+				if (staticDrawing) {
+					Vector<String> commands = translate_bezier_curve(drawing_commands.get(i), vizAtoms.get(i), drawing_commands, vizAtoms);
+					for (int j = 0; j < numFrames; j++) {
+						commandArray.get(j).addAll(commands);
+					} 
+				} else {
+					commandArray.get(getFrame(vizAtoms.get(i))).addAll(translate_bezier_curve(drawing_commands.get(i), vizAtoms.get(i), drawing_commands, vizAtoms));  
+				}			
 			}	
 			
 		} 
@@ -913,7 +946,7 @@ class Parser{
 		for (int i = 0; i < commandArray.size(); i++) {
 			System.out.print("[");
 			for (int j = 0; j < commandArray.get(i).size(); j++) {
-				System.out.print("\""+commandArray.get(i).get(j)+"\"");
+				System.out.print("'"+commandArray.get(i).get(j)+"'");
 				if (j < commandArray.get(i).size() - 1) {
 					System.out.print(",");
 				}
