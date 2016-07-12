@@ -720,22 +720,22 @@ class Parser{
 	
 
 		
-	public static Vector<String> translate_draw_text(String literal, Vector<String> drawing_commands, Vector<String> vizAtoms){
+	public static Vector<String> translate_draw_text(String literal, String vizAtom, Vector<String> drawing_commands, Vector<String> vizAtoms){
 		Vector<String> javaScript = new Vector<String>();
 		
 		for (int i=0;i<drawing_commands.size();i++){
 			
-			if (getPredicate(drawing_commands.get(i)).equals("text_font") && getElement(literal,1).equals(getElement(drawing_commands.get(i),1))){
+			if (getPredicate(drawing_commands.get(i)).equals("text_font") && getElement(literal,1).equals(getElement(drawing_commands.get(i),1)) && getFrame(vizAtom) == getFrame(vizAtoms.get(i))){
 				javaScript.add("ctx.font=\""+getElement(drawing_commands.get(i),2)+"px "+getElement(drawing_commands.get(i),3)+"\";");
 				
 			}
 			
-			if (getPredicate(drawing_commands.get(i)).equals("text_align") && getElement(literal,1).equals(getElement(drawing_commands.get(i),1))){
+			if (getPredicate(drawing_commands.get(i)).equals("text_align") && getElement(literal,1).equals(getElement(drawing_commands.get(i),1)) && getFrame(vizAtom) == getFrame(vizAtoms.get(i))){
 				javaScript.add("ctx.textAlign=\""+getElement(drawing_commands.get(i),2)+"\";");
 				
 			}
 			
-			if (getPredicate(drawing_commands.get(i)).equals("text_color") && getElement(literal,1).equals(getElement(drawing_commands.get(i),1))){
+			if (getPredicate(drawing_commands.get(i)).equals("text_color") && getElement(literal,1).equals(getElement(drawing_commands.get(i),1)) && getFrame(vizAtom) == getFrame(vizAtoms.get(i))){
 				javaScript.add("ctx.fillStyle=\""+getElement(drawing_commands.get(i),2)+"\";");
 				
 			}
@@ -745,21 +745,21 @@ class Parser{
 		return javaScript;
 	}
 	
-	public static Vector<String> translate_quad_curve(String literal, Vector<String> drawing_commands, Vector<String> vizAtoms){
+	public static Vector<String> translate_quad_curve(String literal, String vizAtom, Vector<String> drawing_commands, Vector<String> vizAtoms){
 		Vector<String> javaScript = new Vector<String>();
 		javaScript.add("ctx.beginPath();");
 		javaScript.add("ctx.moveTo("+getElement(literal,2)+","+getElement(literal,3)+");");
 		javaScript.add("ctx.quadraticCurveTo("+getElement(literal,4)+","+getElement(literal,5)+","+getElement(literal,6)+","+getElement(literal,7)+");");
 		for (int i=0;i<drawing_commands.size();i++){
-			if (getPredicate(drawing_commands.get(i)).equals("line_width") && getElement(literal,1).equals(getElement(drawing_commands.get(i),1))){
+			if (getPredicate(drawing_commands.get(i)).equals("line_width") && getElement(literal,1).equals(getElement(drawing_commands.get(i),1)) && getFrame(vizAtom) == getFrame(vizAtoms.get(i))){
 				javaScript.add("ctx.lineWidth="+getElement(drawing_commands.get(i),2)+";");
 			}
 			
-			if (getPredicate(drawing_commands.get(i)).equals("line_cap") && getElement(literal,1).equals(getElement(drawing_commands.get(i),1))){
+			if (getPredicate(drawing_commands.get(i)).equals("line_cap") && getElement(literal,1).equals(getElement(drawing_commands.get(i),1)) && getFrame(vizAtom) == getFrame(vizAtoms.get(i))){
 				javaScript.add("ctx.lineCap=\""+getElement(drawing_commands.get(i),2)+"\";");
 			}
 			
-			if (getPredicate(drawing_commands.get(i)).equals("line_color") && getElement(literal,1).equals(getElement(drawing_commands.get(i),1))){
+			if (getPredicate(drawing_commands.get(i)).equals("line_color") && getElement(literal,1).equals(getElement(drawing_commands.get(i),1)) && getFrame(vizAtom) == getFrame(vizAtoms.get(i))){
 				javaScript.add("ctx.strokeStyle=\""+""+getElement(drawing_commands.get(i),2)+"\";");
 			}
 		}
@@ -767,7 +767,7 @@ class Parser{
 		return javaScript;
 	}
 	
-	public static Vector<String> translate_arc_curve(String literal, Vector<String> drawing_commands, Vector<String> vizAtoms){
+	public static Vector<String> translate_arc_curve(String literal, String vizAtom, Vector<String> drawing_commands, Vector<String> vizAtoms){
 		Vector<String> javaScript = new Vector<String>();
 		javaScript.add("ctx.beginPath();");
 		javaScript.add("ctx.moveTo("+getElement(literal,2)+","+getElement(literal,3)+");");
@@ -779,13 +779,13 @@ class Parser{
 		
 		javaScript.add("ctx.arc("+getElement(literal,2)+","+getElement(literal,3)+","+getElement(literal,4)+","+a+"*Math.PI"+","+b+"*Math.PI"+");");
 		for (int i=0;i<drawing_commands.size();i++){
-			if (getPredicate(drawing_commands.get(i)).equals("line_width") && getElement(literal,1).equals(getElement(drawing_commands.get(i),1))){
+			if (getPredicate(drawing_commands.get(i)).equals("line_width") && getElement(literal,1).equals(getElement(drawing_commands.get(i),1)) && getFrame(vizAtom) == getFrame(vizAtoms.get(i))){
 				javaScript.add("ctx.lineWidth="+getElement(drawing_commands.get(i),2)+";");	
 			}
-			if (getPredicate(drawing_commands.get(i)).equals("line_cap") && getElement(literal,1).equals(getElement(drawing_commands.get(i),1))){
+			if (getPredicate(drawing_commands.get(i)).equals("line_cap") && getElement(literal,1).equals(getElement(drawing_commands.get(i),1)) && getFrame(vizAtom) == getFrame(vizAtoms.get(i))){
 				javaScript.add("ctx.lineCap=\""+getElement(drawing_commands.get(i),2)+"\";");
 			}
-			if (getPredicate(drawing_commands.get(i)).equals("line_color") && getElement(literal,1).equals(getElement(drawing_commands.get(i),1))){
+			if (getPredicate(drawing_commands.get(i)).equals("line_color") && getElement(literal,1).equals(getElement(drawing_commands.get(i),1)) && getFrame(vizAtom) == getFrame(vizAtoms.get(i))){
 				javaScript.add("ctx.strokeStyle=\""+""+getElement(drawing_commands.get(i),2)+"\";");	
 			}
 		}
@@ -793,21 +793,21 @@ class Parser{
 		return javaScript;
 	}
 	
-	public static Vector<String> translate_bezier_curve(String literal, Vector<String> drawing_commands, Vector<String> vizAtoms){
+	public static Vector<String> translate_bezier_curve(String literal, String vizAtom, Vector<String> drawing_commands, Vector<String> vizAtoms){
 		Vector<String> javaScript = new Vector<String>();
 		javaScript.add("ctx.beginPath();");
 		javaScript.add("ctx.moveTo("+getElement(literal,2)+","+getElement(literal,3)+");");
 		javaScript.add("ctx.bezierCurveTo("+getElement(literal,4)+","+getElement(literal,5)+","+getElement(literal,6)+","+getElement(literal,7)+","+getElement(literal,8)+","+getElement(literal,9)+");");
 		for (int i=0;i<drawing_commands.size();i++){
-			if (getPredicate(drawing_commands.get(i)).equals("line_width") && getElement(literal,1).equals(getElement(drawing_commands.get(i),1))){
+			if (getPredicate(drawing_commands.get(i)).equals("line_width") && getElement(literal,1).equals(getElement(drawing_commands.get(i),1)) && getFrame(vizAtom) == getFrame(vizAtoms.get(i))){
 				javaScript.add("ctx.lineWidth="+getElement(drawing_commands.get(i),2)+";");
 			}
 			
-			if (getPredicate(drawing_commands.get(i)).equals("line_cap") && getElement(literal,1).equals(getElement(drawing_commands.get(i),1))){
+			if (getPredicate(drawing_commands.get(i)).equals("line_cap") && getElement(literal,1).equals(getElement(drawing_commands.get(i),1)) && getFrame(vizAtom) == getFrame(vizAtoms.get(i))){
 				javaScript.add("ctx.lineCap=\""+getElement(drawing_commands.get(i),2)+"\";");
 			}
 			
-			if (getPredicate(drawing_commands.get(i)).equals("line_color") && getElement(literal,1).equals(getElement(drawing_commands.get(i),1))){
+			if (getPredicate(drawing_commands.get(i)).equals("line_color") && getElement(literal,1).equals(getElement(drawing_commands.get(i),1)) && getFrame(vizAtom) == getFrame(vizAtoms.get(i))){
 				javaScript.add("ctx.strokeStyle=\""+""+getElement(drawing_commands.get(i),2)+"\";");
 			}
 		}
@@ -819,19 +819,19 @@ class Parser{
 	
 	
 	
-	public static Vector<String> translate_draw_line(String literal, Vector<String> drawing_commands, Vector<String> vizAtoms){
+	public static Vector<String> translate_draw_line(String literal, String vizAtom, Vector<String> drawing_commands, Vector<String> vizAtoms){
 		Vector<String> javaScript = new Vector<String>();
 		javaScript.add("ctx.beginPath();");
 		javaScript.add("ctx.moveTo("+getElement(literal,2)+","+getElement(literal,3)+");");
 		javaScript.add("ctx.lineTo("+getElement(literal,4)+","+getElement(literal,5)+");");
 		for (int i=0;i<drawing_commands.size();i++){
-			if (getPredicate(drawing_commands.get(i)).equals("line_width") && getElement(literal,1).equals(getElement(drawing_commands.get(i),1))){
+			if (getPredicate(drawing_commands.get(i)).equals("line_width") && getElement(literal,1).equals(getElement(drawing_commands.get(i),1)) && getFrame(vizAtom) == getFrame(vizAtoms.get(i))){
 				javaScript.add("ctx.lineWidth="+getElement(drawing_commands.get(i),2)+";");	
 			}
-			if (getPredicate(drawing_commands.get(i)).equals("line_cap") && getElement(literal,1).equals(getElement(drawing_commands.get(i),1))){
+			if (getPredicate(drawing_commands.get(i)).equals("line_cap") && getElement(literal,1).equals(getElement(drawing_commands.get(i),1)) && getFrame(vizAtom) == getFrame(vizAtoms.get(i))){
 				javaScript.add("ctx.lineCap=\""+getElement(drawing_commands.get(i),2)+"\";");
 			}
-			if (getPredicate(drawing_commands.get(i)).equals("line_color") && getElement(literal,1).equals(getElement(drawing_commands.get(i),1))){
+			if (getPredicate(drawing_commands.get(i)).equals("line_color") && getElement(literal,1).equals(getElement(drawing_commands.get(i),1)) && getFrame(vizAtom) == getFrame(vizAtoms.get(i))){
 				javaScript.add("ctx.strokeStyle=\""+""+getElement(drawing_commands.get(i),2)+"\";");	
 			}
 		}
@@ -860,10 +860,10 @@ class Parser{
 
 			if (getPredicate(drawing_commands.get(i)).equals("draw_text")){
 				
-				commandArray.get(getFrame(vizAtoms.get(i))).addAll(translate_draw_text(drawing_commands.get(i), drawing_commands, vizAtoms));
+				commandArray.get(getFrame(vizAtoms.get(i))).addAll(translate_draw_text(drawing_commands.get(i), vizAtoms.get(i), drawing_commands, vizAtoms));
 				
 				/*
-				translate_draw_text(drawing_commands.get(i), drawing_commands, vizAtoms); //this is function which returns void and 
+				translate_draw_text(drawing_commands.get(i), vizAtoms.get(i), drawing_commands, vizAtoms); //this is function which returns void and 
 				
 																//translates drawing_commands.get(i) which is a draw_text atom.
 																	/
@@ -882,28 +882,28 @@ class Parser{
 			
 			if (getPredicate(drawing_commands.get(i)).equals("draw_quad_curve")){
 				
-				commandArray.get(getFrame(vizAtoms.get(i))).addAll(translate_quad_curve(drawing_commands.get(i), drawing_commands, vizAtoms)); 
+				commandArray.get(getFrame(vizAtoms.get(i))).addAll(translate_quad_curve(drawing_commands.get(i), vizAtoms.get(i), drawing_commands, vizAtoms)); 
 				
 
 			}
 			
 			if (getPredicate(drawing_commands.get(i)).equals("draw_arc_curve")){
 				
-				commandArray.get(getFrame(vizAtoms.get(i))).addAll(translate_arc_curve(drawing_commands.get(i), drawing_commands, vizAtoms));  
+				commandArray.get(getFrame(vizAtoms.get(i))).addAll(translate_arc_curve(drawing_commands.get(i), vizAtoms.get(i), drawing_commands, vizAtoms));  
 				
 
 			}
 			
 			if (getPredicate(drawing_commands.get(i)).equals("draw_line")){   
 
-				commandArray.get(getFrame(vizAtoms.get(i))).addAll(translate_draw_line(drawing_commands.get(i), drawing_commands, vizAtoms));  
+				commandArray.get(getFrame(vizAtoms.get(i))).addAll(translate_draw_line(drawing_commands.get(i), vizAtoms.get(i), drawing_commands, vizAtoms));  
 				
 			}
 			
 			if (getPredicate(drawing_commands.get(i)).equals("draw_bezier_curve")){   
 				
 		
-				commandArray.get(getFrame(vizAtoms.get(i))).addAll(translate_bezier_curve(drawing_commands.get(i), drawing_commands, vizAtoms));  
+				commandArray.get(getFrame(vizAtoms.get(i))).addAll(translate_bezier_curve(drawing_commands.get(i), vizAtoms.get(i), drawing_commands, vizAtoms));  
 				
 			}	
 			
